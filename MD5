@@ -1,0 +1,16 @@
+a5dcd451b415b6f254d26f7d0dfe670d *DESCRIPTION
+2585d1b273f87c57881d1596ba0def6d *NAMESPACE
+4ebb4a1d0c9e0f1f17f4545e9fb4b7fa *R/ControlResponseBias.R
+f20c3d052813e047a95630e6e06e80cc *R/Nseriesk.R
+9ec15a21e1f96ae99aa07a4bae66c4c5 *R/eap_continuous_obli.R
+d5a7f1760b6dd4d4b014e4092517889c *R/eap_grad_obli.R
+ca262d937e6a9441848d04e3a2d9f951 *R/ordnormulti.R
+88ed2aa706f6ffe68f1d5f0f6065d387 *R/pconmul.R
+4bf346185e1af2616d4fd0c8ed47cb3a *R/ppnd.R
+e8d026669b986b704e5002543b13693a *R/reap_grad_obli.R
+205de6b842fa08f1e2ad21e3c01fddb2 *R/thresholds.R
+1388435610dcd60b074da60ad90cb411 *data/vampyr_example.rda
+c6e8db31d0ab29372857b1ebde9d7f5f *man/ControlResponseBias.Rd
+11d2f975320aec3f1d7986def252cc4c *man/vampyr-internal.Rd
+94114dbd3eaf7c8d5ab1e30c9cb0120f *man/vampyr-package.Rd
+514d94fb3aff7b041d81352bb2febfab *man/vampyr_example.Rd
