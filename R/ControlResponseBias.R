@@ -1,4 +1,4 @@
-ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD = FALSE,contAC = FALSE,corr = "Pearson",rotat = "promin",target,factor_scores = FALSE, PA = FALSE, display = TRUE){
+ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD = FALSE,contAC = FALSE,corr = "Pearson",rotat = "promin",target,factor_scores = FALSE, PA = FALSE, path = FALSE, display = TRUE){
 
   ######################################################################
   #  x : Raw sample scores
@@ -252,7 +252,7 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
   }
   else{
     if(r==1){
-      message('\nRotation methods are only available when retaining more than one content factor. The obtained loading matrix will not be rotated.')
+#      message('\nRotation methods are only available when retaining more than one content factor. The obtained loading matrix will not be rotated.')
       rotat<-"none"
       rotat_package<-0
     }
@@ -285,6 +285,21 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
 
   if (is.logical(PA)!=TRUE){
     stop("PA argument should be a logical variable.")
+  }
+
+  ######################################################################
+  #  path: If path diagram  will be plotted
+  ######################################################################
+
+  if (is.logical(path)!=TRUE){
+    stop("path argument should be a logical variable.")
+  }
+
+  if (path == TRUE){
+    if (m > 40 || r >5){
+      path = FALSE
+      message("\npath argument is limited to a maximum of 40 items and 5 content factors. The path diagram will not be plotted")
+    }
   }
 
 
@@ -1112,11 +1127,406 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
     }
     else {
       matrices<-list("loadings"=P,"Phi"=PHI_total,"Factor_scores"=th,"comunalities"=dRr,"ECV"=EV,"reduced"=Ref,"produced"=Rpf2,"RMSEA" = RMSEA,"Chi"=chi_model,"TLI"=TLI,"CFI"=CFI,"GFI"=GFI,"RMSR"=RMSR,"kelley"=kelley)
-
     }
   }
   else {
     matrices<-list("loadings"=P,"Phi"=PHI_total,"comunalities"=dRr,"ECV"=EV,"reduced"=Ref,"produced"=Rpf2,"RMSEA" = RMSEA,"Chi"=chi_model,"TLI"=TLI,"CFI"=CFI,"GFI"=GFI,"RMSR"=RMSR,"kelley"=kelley)
+  }
+
+
+
+  ################## PATH DIAGRAM  ##################
+
+  if (path == T){
+
+    lambdas <- fit@Model@GLIST$lambda
+    lambdas[which(lambdas > -.2 & lambdas < .2)] = 0.000
+    fit@Model@GLIST$lambda <- lambdas
+
+    lambdas2 <- fit@ParTable$est
+    lambdas3 <- lambdas2[1:(m*(r+contSD+contAC))]
+
+    # REARRANGE ITEMS ORDER
+    # lambdas4 <- matrix(lambdas3, ncol = (r+contSD+contAC))
+    # lambdas_cont <- lambdas4[,((1+contSD+contAC) : (r+contSD+contAC))]
+    #
+    # max_loading <- max.col(abs(lambdas_cont))
+    #
+    # n_max_factor <- vector()
+    # pos <- matrix(nrow = m, ncol = r)
+    # new_order <- vector()
+    #
+    # for (i in 1:r){
+    #   buff_sum <- sum(max_loading == i)
+    #
+    #   pos[,i] <- order(lambdas_cont[,i],decreasing = T)
+    # }
+    #
+    # for (i in 1:m){
+    #   max_loading <- which.max(abs(lambdas_cont[i,]))
+    #   new_order[i] <- pos[i,max_loading]
+    # }
+    #
+    # lambdas5 <- lambdas4[new_order,]
+
+    lambdas5 <- lambdas3
+
+    #lambdas3[which(lambdas3 > -.2 & lambdas3 < .2)] = 0.00
+
+    AC_index <- c((contSD*m+1):(m*(contSD+contAC)))
+
+    for (i in 1:(m*(r+contSD+contAC))){ #different criteria for AC
+      if (any(i == AC_index) ){
+        if (lambdas5[i] > -.2 && lambdas5[i] < .2){
+          lambdas5[i] <- 0.00
+        }
+      }
+      else {
+        if (lambdas5[i] > -.3 && lambdas5[i] < .3){
+          lambdas5[i] <- 0.00
+        }
+      }
+    }
+
+    fit@ParTable$est[1:(m*(r+contSD+contAC))] <- lambdas5
+
+    if (contAC == T){
+        base_plot <- c("semPaths(fit, what = 'est', layout = 'tree3', intercepts = F, residuals = F, rotation = 1, fade = F, exoCov = F, edge.width = 0.25, edge.label.cex = 1, ask = FALSE, mar = c(3,1,3,1), thresholds = FALSE,")
+    }
+    else {
+      base_plot <- c("semPaths(fit, what = 'est', layout = 'tree3', intercepts = F, residuals = F, rotation = 1, fade = F, exoCov = F, edge.width = 0.25, edge.label.cex = 1, ask = FALSE, mar = c(3,3,3,3), thresholds = FALSE,")
+
+    }
+
+    if (contAC == T){
+      base_plot <- paste(base_plot, " bifactor = 'AC',")
+    }
+
+    if (m < 20){
+      base_plot <- paste(base_plot, " sizeMan = 5,")
+    }
+    if (m > 20 && m <= 30){
+      base_plot <- paste(base_plot, " sizeMan = 4,")
+    }
+
+    if (m > 30 && m <= 40){
+      base_plot <- paste(base_plot, " sizeMan = 3,")
+    }
+
+    ############  NODE COLOR
+
+    buff_color <- character(5)
+    buff_color[1] <- 'color = list( lat = c('
+
+    if (contSD == T && contAC == T){
+      buff_color[1] <- 'color = list( lat = c(rgb(255,200,135, maxColorValue = 255),'
+      buff_color[2] <- 'rgb(204,110,110, maxColorValue = 255),'
+    }
+    if (contSD == T && contAC == F){
+      buff_color[1] <- 'color = list( lat = c(rgb(255,200,135, maxColorValue = 255),'
+    }
+    if (contSD == F && contAC == T){
+      buff_color[1] <- 'color = list( lat = c(rgb(204,110,110, maxColorValue = 255),' #buff_color[2] <- 'rgb(255,200,135, maxColorValue = 255),'
+    }
+    if (contSD == F && contAC == F){
+      buff_color[1] <- 'color = list( lat = c('
+    }
+
+    n_colors <- vector()
+    n_colors[1] <- 'rgb(180,235,215, maxColorValue = 255),'  #GREEN
+    n_colors[2] <- 'rgb(200,205,235, maxColorValue = 255),'  #BLUE
+    n_colors[3] <- 'rgb(255,180,180, maxColorValue = 255),'  #PINK
+    n_colors[4] <- 'rgb(128,206,225, maxColorValue = 255),'  #AZUL ANA
+    n_colors[5] <- 'rgb(120,220,120, maxColorValue = 255),'  #VERDE MANZANA
+
+    n_colors2 <- vector()
+    n_colors2[1] <- 'rgb(14,165,135, maxColorValue = 255),'  #GREEN
+    n_colors2[2] <- 'rgb(130,105,165, maxColorValue = 255),'  #BLUE
+    n_colors2[3] <- 'rgb(205,100,110, maxColorValue = 255),'  #PINK
+    n_colors2[4] <- 'rgb(40,80,180, maxColorValue = 255),'  #AZUL ANA
+    n_colors2[5] <- 'rgb(60,140,60, maxColorValue = 255),'  #VERDE MANZANA
+
+    for (i in (1+contSD+contAC):(r+contSD+contAC)){
+      #for each factor, change the colors of the nodes
+      if (i == 1){
+        #no SD or AC
+        buff_color[1] <- sprintf('color = list( lat = c(%s',n_colors[i-(contSD+contAC)])
+      }
+      else {
+        buff_color[i] <- n_colors[i-(contSD+contAC)]
+      }
+    }
+    #remove last ','
+    buff_color[i] <- substr(buff_color[i],1,nchar(buff_color[i])-1)
+
+    buff_color[i+1] <- '),'
+
+    buff_color <- paste(buff_color, collapse = '')
+
+    ########### END NODE COLOR
+
+    ########### ITEM COLOR
+
+    if (contSD == T){
+      #SD markers with different color, loop for each item
+      buff_color2 <- vector()
+      for (i in 1:(size(SD_items)[2])){
+        if (i == 1){
+          buff_color2[1] <- ' man = c(rgb(255,200,135, maxColorValue = 255),'
+        }
+        else {
+          buff_color2[i] <- 'rgb(255,200,135, maxColorValue = 255),'
+        }
+      }
+
+      for (j in 1:(m-i)){
+        buff_color2[j+i] <- 'rgb(230,230,230, maxColorValue = 255),'
+      }
+
+      #remove last ','
+      buff_color2[j+i] <- substr(buff_color2[j],1,nchar(buff_color2[j])-1)
+
+
+      buff_color2[j+i+1] <- ')),'
+
+      buff_color2 <- paste(buff_color2,collapse = '')
+
+    }
+    else {
+      buff_color2 <- 'man = rgb(230,230,230, maxColorValue = 255)),'
+    }
+
+    ########## END ITEM COLOR
+
+    ########## EDGE COLOR
+
+    buff_color3 <- vector()
+
+    if (contSD == T && contAC == T){
+
+      for (i in 1:m){ ### SD ###
+        # SD loadings
+        if (i == 1){
+          buff_color3[1] <- 'edge.color = c(rgb(225,140,75, maxColorValue = 255),'
+        }
+        else {
+          buff_color3[i] <- 'rgb(225,140,75, maxColorValue = 255),'
+        }
+      }
+
+      for (j in 1:m){ ### AC ###
+        buff_color3[j+i] <- 'rgb(180,90,90, maxColorValue = 255),'
+      }
+
+      for (k in 1:(m*r)){ ## content ###
+        if (k <= m){ # 1st content factor
+          buff_color3[k+i+j] <- n_colors2[1]
+        }
+        if ((k <= (m*2)) && (k > m)){
+          buff_color3[k+i+j] <- n_colors2[2]
+        }
+        if ((k <= (m*3)) && (k > (m*2))){
+          buff_color3[k+i+j] <- n_colors2[3]
+        }
+        if ((k <= (m*4)) && (k > (m*3))){
+          buff_color3[k+i+j] <- n_colors2[4]
+        }
+        if ((k <= (m*5)) && (k > (m*4))){
+          buff_color3[k+i+j] <- n_colors2[5]
+        }
+      }
+
+    }
+    if (contSD == T && contAC == F){
+
+      for (i in 1:m){ ### SD ###
+        # SD loadings
+        if (i == 1){
+          buff_color3[1] <- 'edge.color = c(rgb(225,140,75, maxColorValue = 255),'
+        }
+        else {
+          buff_color3[i] <- 'rgb(225,140,75, maxColorValue = 255),'
+        }
+      }
+
+      j <- 0
+      for (k in 1:(m*r)){ ## content ###
+        if (k <= m){ # 1st content factor
+          buff_color3[k+i+j] <- n_colors2[1]
+        }
+        if ((k <= (m*2)) && (k > m)){
+          buff_color3[k+i+j] <- n_colors2[2]
+        }
+        if ((k <= (m*3)) && (k > (m*2))){
+          buff_color3[k+i+j] <- n_colors2[3]
+        }
+        if ((k <= (m*4)) && (k > (m*3))){
+          buff_color3[k+i+j] <- n_colors2[4]
+        }
+        if ((k <= (m*5)) && (k > (m*4))){
+          buff_color3[k+i+j] <- n_colors2[5]
+        }
+
+        #buff_color3[k+i+j] <- 'rgb(40,160,60, maxColorValue = 255),'
+      }
+
+    }
+    if (contSD == F && contAC == T){
+      i <- 0
+
+      for (j in 1:m){ ### AC ###
+        if (j == 1){
+          buff_color3[1] <- 'edge.color = c(rgb(180,90,90, maxColorValue = 255),'
+        }
+        else {
+          buff_color3[j+i] <- 'rgb(180,90,90, maxColorValue = 255),'
+        }
+      }
+
+      for (k in 1:(m*r)){ ## content ###
+        if (k <= m){ # 1st content factor
+          buff_color3[k+i+j] <- n_colors2[1]
+        }
+        if ((k <= (m*2)) && (k > m)){
+          buff_color3[k+i+j] <- n_colors2[2]
+        }
+        if ((k <= (m*3)) && (k > (m*2))){
+          buff_color3[k+i+j] <- n_colors2[3]
+        }
+        if ((k <= (m*4)) && (k > (m*3))){
+          buff_color3[k+i+j] <- n_colors2[4]
+        }
+        if ((k <= (m*5)) && (k > (m*4))){
+          buff_color3[k+i+j] <- n_colors2[5]
+        }
+        #buff_color3[k+i+j] <- 'rgb(40,160,60, maxColorValue = 255),'
+      }
+
+    }
+    if (contSD == F && contAC == F){
+      i <- 0
+      j <- 0
+
+      for (k in 1:(m*r)){ ## content ###
+        if (k == 1){
+          buff_color3[1] <- sprintf('edge.color = c(%s',n_colors2[1])
+        }
+        else {
+          if (k <= m){ # 1st content factor
+            buff_color3[k+i+j] <- n_colors2[1]
+          }
+          if ((k <= (m*2)) && (k > m)){
+            buff_color3[k+i+j] <- n_colors2[2]
+          }
+          if ((k <= (m*3)) && (k > (m*2))){
+            buff_color3[k+i+j] <- n_colors2[3]
+          }
+          if ((k <= (m*4)) && (k > (m*3))){
+            buff_color3[k+i+j] <- n_colors2[4]
+          }
+          if ((k <= (m*5)) && (k > (m*4))){
+            buff_color3[k+i+j] <- n_colors2[5]
+          }
+          #buff_color3[k+i+j] <- 'rgb(40,160,60, maxColorValue = 255),'
+        }
+      }
+
+    }
+
+    #remove last ','
+    buff_color3[i+j+k] <- substr(buff_color3[i+j+k],1,nchar(buff_color3[i+j+k])-1)
+
+    buff_color3[i+j+k+1] <-'),'
+
+    buff_color3 <- paste(buff_color3,collapse = '')
+
+    ########## END EDGE COLOR
+
+    ########## LABEL POSITION
+
+    # Indistinctly of SD and content, AC independent
+
+    labels_index <- .8/(r+contSD)
+    if (labels_index == .8){
+      labels_index <- .6
+    }
+
+    buff_labels_pos <- vector()
+
+    # if ((r+contSD) == 1){
+    #   buff_labels_pos <- 'edge.label.position = 0.5'
+    # }
+    # else{
+
+      buff <- 0
+      buff2 <- 0.0
+      incr <- signif(labels_index/4,2)
+      n_jumps <- 1
+        for (i in 1:(r+contSD+contAC)){
+          for (j in 1:m){
+            if (i == 1 && j == 1){
+              buff_labels_pos[1] <- sprintf(' edge.label.position = c(%.2f ,',(1-labels_index+buff2))
+              pos <- 2
+              if (n_jumps != 3){
+                buff2 <- buff2 + incr
+                n_jumps <- n_jumps + 1
+              }
+              else {
+                buff2 <- 0.0
+                n_jumps <- 1
+              }
+              #buff2 <- - buff2
+            }
+            else {
+              if (i == 2 && contAC == T) {#AC
+                buff_labels_pos[pos] <- sprintf('%.2f,',0.6+buff2)
+                if (n_jumps != 3){
+                  buff2 <- buff2 + incr
+                  n_jumps <- n_jumps + 1
+                }
+                else {
+                  buff2 <- 0.0
+                  n_jumps <- 1
+                }
+                #buff2 <- - buff2
+                pos <- pos + 1
+                buff <- 1
+              }
+              else {
+                buff_labels_pos[pos] <- sprintf('%.2f ,', (1-labels_index*(i-buff) + buff2))
+                pos <- pos + 1
+                if (n_jumps != 3){
+                  buff2 <- buff2 + incr
+                  n_jumps <- n_jumps + 1
+                }
+                else {
+                  buff2 <- 0.0
+                  n_jumps <- 1
+                }
+                #buff2 <- - buff2
+              }
+            }
+          }
+        }
+
+      #remove last ','
+      buff_labels_pos[i*j] <- substr(buff_labels_pos[i*j],1,nchar(buff_labels_pos[i*j])-1)
+
+      buff_labels_pos[(i*j)+1] <-')'
+
+      buff_labels_pos <- paste(buff_labels_pos,collapse = '')
+    #}
+
+
+
+    ######### END LABEL POSITION
+
+
+    plot_final <- paste(base_plot,'',buff_color,'',buff_color2,'',buff_color3,buff_labels_pos,')')
+
+
+    result_path <- tryCatch({eval(parse(text=plot_final))}, error = function(e) message("\nPath diagram failed."))
+
   }
 
   ##################### Printing time #####################
@@ -1197,10 +1607,10 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
       cat('\n\n')
       cat('Univariate item descriptives')
       cat('\n\n')
-      cat('Item      Mean        Variance    Skewness     Kurtosis (Zero centered)\n\n')
+      cat('Item       Mean        Variance    Skewness     Kurtosis (Zero centered)\n\n')
       for (i in 1:m){
         buff<-sprintf('Item %3.0f ',i)
-        buff1<-sprintf('%2.3f       %2.3f       % 2.3f      % 2.3f',mean(as.matrix(x_o[,i])),(sd(as.matrix(x_o[,i]))^2),Skew[i],Kur[i]-3)
+        buff1<-sprintf('% 2.3f      % 2.3f      % 2.3f       % 2.3f',mean(as.matrix(x_o[,i])),(sd(as.matrix(x_o[,i]))^2),Skew[i],Kur[i]-3)
         cat(paste(buff,buff1))
         cat('\n')
       }
@@ -1316,7 +1726,7 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
       cat('\n\n')
       cat(sprintf('          Root Mean Square Error of Approximation (RMSEA) = %4.3f',RMSEA))
       cat('\n\n')
-      cat(sprintf('Robust Mean-Scaled Chi Square with %.0f degrees of freedom = %.3f',df_model,chi_model))
+      cat(sprintf(' Robust Mean-Scaled Chi Square with %.0f degrees of freedom = %.3f',df_model,chi_model))
       cat('\n\n')
       cat(sprintf('              Non-Normed Fit Index (NNFI; Tucker & Lewis) = %4.3f', TLI))
       cat('\n')
@@ -1342,11 +1752,11 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
     if (display_loadings == T){
 
       cat('\n\n')
-      if (rotat>0){
-        cat('Rotated loading matrix\n\n')
+      if (rotat=="none"){
+        cat('Unrotated loading matrix\n\n')
       }
       else {
-        cat('Loading matrix\n\n')
+        cat('Rotated loading matrix\n\n')
       }
 
       prmatrix(round(P,5))
@@ -1477,5 +1887,6 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
 
     invisible(matrices)
   }
+
 
 }

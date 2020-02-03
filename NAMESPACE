@@ -8,3 +8,4 @@ importFrom("GPArotation","oblimin","quartimin","targetT","targetQ","pstT","pstQ"
            "simplimax","bentlerT","bentlerQ","tandemI","tandemII","geominT","geominQ",
            "cfT","cfQ","infomaxT","infomaxQ","mccammon","bifactorT","bifactorQ")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","flush.console")
+importFrom("semPlot","semPaths")

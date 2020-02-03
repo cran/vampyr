@@ -9,12 +9,12 @@ Performs Factor Analysis (FA) implementing the method developed by Ferrando, Lor
 \usage{
 ControlResponseBias(x, content_factors, SD_items, unbalanced_items, contSD = FALSE,
     contAC = FALSE, corr = "Pearson", rotat = "promin", target, factor_scores = FALSE,
-    PA = FALSE, display = TRUE)
+    PA = FALSE, path = FALSE, display = TRUE)
 
 }
 \arguments{
   \item{x}{
-Raw sample scores or a covariance/correlation matrix directly.
+Raw sample scores or a covariance/correlation matrix directly. The SD items (if applicable) have to be included in the same dataset as the content ones.
 }
   \item{content_factors}{
 The number of content factors to be retained. At least, each factor has to be defined by 3 items, so the maximum number of content factors will be the number of items / 3.
@@ -46,6 +46,10 @@ Logical variable determining if the factor scores will be computed. If TRUE, Ful
   \item{PA}{
 Logical variable determining if the Optimal Implementation of Parallel Analysis (Timmerman & Lorenzo-Seva, 2011) will be computed for estimating the number of factors to be retained.
 }
+  \item{path}{
+Logical variable determining if path diagram will be plotted (FALSE by default). It uses the function \code{\link[semPlot]{semPaths}} internally, and for preventing displaying issues, it is limited to 40 total items and 5 content factors. Since it was designed just for providing a visual representation of the factor loadings, the residuals and intercepts have been omited, and the loadings lower than .3 in absolute value are not being plotted (in AC the threshold is .2).
+
+}
   \item{display}{
 Determines if the output will be displayed in the console, TRUE by default. If it is TRUE, the output is printed in console and if it is FALSE, the output is returned silently to the output variable, without printing anything in console. Alternativelly, a character array can be provided for printing specific sections of the output, the options being the following: "Summary", "Descriptives", "Adequacy", "PA" (Parallel Analysis),"GOF" (Goodness of Fit indices) and "Loadings".
 }
@@ -55,9 +59,9 @@ The function is based on the method proposed by Ferrando, Lorenzo-Seva & Chico (
 
 The FA procedure is structurated in 3 steps:
 
-1. Extract the Social Desirability factor using the SD markers provided by the user.
+1. Extract the Social Desirability factor using the SD markers provided by the user. This items should be pure measures of SD and are assumed to be uncorrelated with the content.
 
-2. Extract the Acquiescence factor using a balanced set of content items, containing the same number of positively keyed and negatively keyed items. If the scale is only partially balanced, some items of the predominant type (positively keyed or negatibely keyed) have to be excluded from the balanced set.
+2. Extract the Acquiescence factor using a balanced set of content items, containing the same number of positively keyed and negatively keyed items. If the scale is only partially balanced, some items of the predominant type (positively keyed or negatibely keyed) have to be excluded from the balanced set. The recommended exclusion criteria is the following: exclude the items with lower loadings on AC, using the "unbalanced_itemd" argument. If there is no a priori reasoning, we recommend selecting some items at random to be used as unbalanced in a first exploratory analisis and then, look at the AC loadings and select the ones with lower loadings for a definitive second analisis.
 
 3. Extract the content factors using the residual matrix obtained after substracting the variance due to Social Desirability and Acquiescence.
 
@@ -146,6 +150,8 @@ Jorge Tendeiro
 }
 
 \examples{
+## Example 1
+
 ## This is an example using the vampyr_example dataset, which contains 4 SD markers (the first
 ## 4 items, defined using the "SD_items" argument) and 6 Physical aggression items extracted
 ## from the IDAQ questionnaire. Since the 6 content items are balanced (3 positively worded and
