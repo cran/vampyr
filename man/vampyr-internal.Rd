@@ -8,6 +8,8 @@
 \alias{ppnd}
 \alias{reap_grad_obli}
 \alias{thresholds}
+\alias{transpose}
+\alias{size}
 \title{
 vampyr-internal
 }
@@ -23,6 +25,8 @@ pconmul
 ppnd
 reap_grad_obli
 thresholds
+transpose
+size
 }
 \author{
 David Navarro-Gonzalez

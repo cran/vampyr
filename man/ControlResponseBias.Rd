@@ -112,29 +112,29 @@ The robust goodness fit of indices are computed using \code{\link{lavaan}} (Ross
 }
 \references{
 
-Bentler, P. M., & Yuan, K. H. (2011). Positive definiteness via off-diagonal scaling of a symmetric indefinite matrix. Psychometrika, 76(1), 119-123. doi:10.1007/s11336-010-9191-3
+Bentler, P. M., & Yuan, K. H. (2011). Positive definiteness via off-diagonal scaling of a symmetric indefinite matrix. Psychometrika, 76(1), 119-123. \doi{10.1007/s11336-010-9191-3}
 
-Bernaards, C. A. and Jennrich, R. I. (2005) Gradient Projection Algorithms and Software for Arbitrary Rotation Criteria in Factor Analysis. Educational and Psychological Measurement, 65, 676-696. doi:10.1177/0013164404272507
+Bernaards, C. A. and Jennrich, R. I. (2005) Gradient Projection Algorithms and Software for Arbitrary Rotation Criteria in Factor Analysis. Educational and Psychological Measurement, 65, 676-696. \doi{10.1177/0013164404272507}
 
 Ferrando, P. J., & Lorenzo-Seva, U. (2016). A note on improving EAP trait estimation in oblique factor-analytic and item response theory models. Psicologica, 37, 235-247.
 
-Ferrando, P. J., Lorenzo-Seva, U., & Chico, E. (2009). A General factor-Analytic procedure for assessing response bias in questionnaire measures. Structural Equation Modeling, 16, 364-381. doi:10.1080/10705510902751374
+Ferrando, P. J., Lorenzo-Seva, U., & Chico, E. (2009). A General factor-Analytic procedure for assessing response bias in questionnaire measures. Structural Equation Modeling, 16, 364-381. \doi{10.1080/10705510902751374}
 
-Jackson, J. E. (2005). Oblimin Rotation. Encyclopedia of Biostatistics. 6. doi:10.1002/0470011815.b2a13060
+Jackson, J. E. (2005). Oblimin Rotation. Encyclopedia of Biostatistics. 6. \doi{10.1002/0470011815.b2a13060}
 
-Kaiser, H.F. (1958). The varimax criterion for analytic rotation in factor analysis. Psychometrika, 23, 187-200. doi:10.1007/BF02289233
+Kaiser, H.F. (1958). The varimax criterion for analytic rotation in factor analysis. Psychometrika, 23, 187-200. \doi{10.1007/BF02289233}
 
-Lorenzo-Seva, U. (1999). Promin: A Method for Oblique Factor Rotation. Multivariate Behavioral Research, 34(3), 347-365. doi:10.1207/S15327906MBR3403_3
+Lorenzo-Seva, U. (1999). Promin: A Method for Oblique Factor Rotation. Multivariate Behavioral Research, 34(3), 347-365. \doi{10.1207/S15327906MBR3403_3}
 
-Navarro-Gonzalez, D., Vigil-Colet, A., Ferrando, P.J., & Lorenzo-Seva, U. (2019). Psychological Test Toolbox: A New Tool to Compute Factor Analysis Controlling Response Bias. Journal of Statistical Software, 91(6). doi:10.18637/jss.v091.i06
+Navarro-Gonzalez, D., Vigil-Colet, A., Ferrando, P.J., & Lorenzo-Seva, U. (2019). Psychological Test Toolbox: A New Tool to Compute Factor Analysis Controlling Response Bias. Journal of Statistical Software, 91(6). \doi{10.18637/jss.v091.i06}
 
-R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
+R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. \url{https://www.R-project.org}
 
-Rosseel, Y. (2012). lavaan: An R Package for Structural Equation Modeling. Journal of Statistical Software, 48(2).
+Rosseel, Y. (2012). lavaan: An R Package for Structural Equation Modeling. Journal of Statistical Software, 48(2).\doi{10.18637/jss.v048.i02}
 
-Timmerman, M. E., & Lorenzo-Seva, U. (2011). Dimensionality Assessment of Ordered Polytomous Items with Parallel Analysis. Psychological Methods, 16, 209-220.
+Timmerman, M. E., & Lorenzo-Seva, U. (2011). Dimensionality Assessment of Ordered Polytomous Items with Parallel Analysis. Psychological Methods, 16, 209-220. \doi{10.1037/a0023353}
 
-Vervloet, M., Kiers, H.A.L., Van den Noortgate, W., & Ceulemans, E. (2013). PCovR: An R Package for Principal Covariates Regression. Journal of Statistical Software, 65(8).
+Vervloet, M., Kiers, H.A.L., Van den Noortgate, W., & Ceulemans, E. (2013). PCovR: An R Package for Principal Covariates Regression. Journal of Statistical Software, 65(8). \doi{10.18637/jss.v065.i08}
 
 }
 \author{
@@ -150,8 +150,6 @@ Jorge Tendeiro
 }
 
 \examples{
-## Example 1
-
 ## This is an example using the vampyr_example dataset, which contains 4 SD markers (the first
 ## 4 items, defined using the "SD_items" argument) and 6 Physical aggression items extracted
 ## from the IDAQ questionnaire. Since the 6 content items are balanced (3 positively worded and
@@ -162,5 +160,5 @@ ControlResponseBias(vampyr_example, content_factors = 1, SD_items = c(1,2,3,4),
 
 ## For speeding purposes, some options have been disabled. Pearson correlation matrix is
 ## being used, but Polychoric matrix may be advisable. Parallel Analysis ('PA' argument)
-## is disabled, as well as the factor scores.
+## is disabled, as well as the factor scores and the path diagram.
 }

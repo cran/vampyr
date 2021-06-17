@@ -1,6 +1,4 @@
 exportPattern("^[[:alpha:]]+")
-importFrom("optimbase","transpose")
-importFrom("optimbase","size")
 importFrom("stats", "cor","sd")
 importFrom("corpcor","mpower")
 importFrom("PCovR","promin","wvarim")

@@ -10,7 +10,7 @@ Package for performing Factor Analysis (FA) implementing the method developed by
 \item{\code{\link{ControlResponseBias}}}{Performs FA controlling response biases.}
 }
 \references{
-Ferrando, P. J., Lorenzo-Seva, U., & Chico, E. (2009). A General factor-Analytic procedure for assessing response bias in questionnaire measures. Structural Equation Modeling, 16, 364-381. doi:10.1080/10705510902751374
+Ferrando, P. J., Lorenzo-Seva, U., & Chico, E. (2009). A General factor-Analytic procedure for assessing response bias in questionnaire measures. Structural Equation Modeling, 16, 364-381. \doi{10.1080/10705510902751374}
 }
 \author{
 David Navarro-Gonzalez

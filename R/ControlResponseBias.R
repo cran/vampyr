@@ -73,7 +73,7 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
     }
     else {
       #check the number of SD items
-      n_SD_items<-optimbase::size(SD_items)[2]
+      n_SD_items<-size(SD_items)[2]
       if (n_SD_items<4){
         stop("The argument SD_items has to be a vector with at least 4 items")
       }
@@ -87,7 +87,7 @@ ControlResponseBias<-function(x,content_factors,SD_items,unbalanced_items,contSD
       }
       else {
         #check the number of SD items
-        n_SD_items<-optimbase::size(SD_items)[2]
+        n_SD_items<-size(SD_items)[2]
         if (n_SD_items<4){
           stop("The argument SD_items has to be a vector with at least 4 items")
         }

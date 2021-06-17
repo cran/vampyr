@@ -1,8 +1,8 @@
 Package: vampyr
 Type: Package
 Title: Factor Analysis Controlling the Effects of Response Bias
-Version: 1.0.6
-Date: 2020-02-03
+Version: 1.1.1
+Date: 2021-06-17
 Author: David Navarro-Gonzalez, Andreu Vigil-Colet, Pere J. Ferrando, Urbano Lorenzo-Seva, Jorge N. Tendeiro
 Maintainer: David Navarro-Gonzalez <david.navarro@urv.cat>
 Description: Vampirize the response biases from a dataset! Performs 
@@ -10,13 +10,13 @@ Description: Vampirize the response biases from a dataset! Performs
     and acquiescence using the method described in Ferrando, 
     Lorenzo-Seva & Chico (2009) <doi:10.1080/10705510902751374>.
 Depends: R (>= 2.10)
-Imports: stats, optimbase, psych, EFA.MRFA, GPArotation, PCovR,
-        moments, corpcor, lavaan, fungible, semPlot
+Imports: stats, psych, EFA.MRFA, GPArotation, PCovR, moments, corpcor,
+        lavaan, fungible, semPlot
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2020-02-03 09:16:57 UTC; 39928973-F
+Packaged: 2021-06-17 07:17:21 UTC; David
 Repository: CRAN
-Date/Publication: 2020-02-03 09:40:02 UTC
+Date/Publication: 2021-06-17 08:30:02 UTC
